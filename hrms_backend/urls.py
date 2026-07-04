@@ -17,7 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from core.views import AuthAppView
+
 urlpatterns = [
+    path('', AuthAppView.as_view(), name='auth-app'),
     path('admin/', admin.site.urls),
     path('api/', include('core.urls')),
 ]
