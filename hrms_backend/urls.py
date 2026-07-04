@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from core.views import AuthAppView
+from core.views import AuthLoginPageView, AuthSignupPageView
 
 urlpatterns = [
-    path('', AuthAppView.as_view(), name='auth-app'),
+    path('', AuthLoginPageView.as_view(), name='auth-home'),
+    path('login/', AuthLoginPageView.as_view(), name='auth-login'),
+    path('signup/', AuthSignupPageView.as_view(), name='auth-signup'),
     path('admin/', admin.site.urls),
     path('api/', include('core.urls')),
 ]

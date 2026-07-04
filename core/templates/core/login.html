@@ -1,0 +1,100 @@
+{% extends 'core/auth_base.html' %}
+
+{% block title %}HRMS Login{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+  <article class="hero-panel">
+    <span class="eyebrow">Secure login</span>
+    <h2>Sign in to the HRMS workspace with your Django-backed account.</h2>
+    <p class="hero-copy">JWT tokens are issued by the DRF backend, stored locally for the session demo, and used to fetch the current user profile and protected resources.</p>
+
+    <div class="feature-list">
+      <div class="feature-item">
+        <strong>Token-based auth</strong>
+        <span>Login calls the backend and stores refresh and access tokens.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Email verification</strong>
+        <span>Verification links auto-run when opened with the encoded uid and token.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Profile sync</strong>
+        <span>The current user is fetched from <span class="mono">/api/auth/me/</span> after sign-in.</span>
+      </div>
+    </div>
+  </article>
+
+  <div class="stack">
+    <article class="card">
+      <div class="card-head">
+        <h3>Login</h3>
+        <p>Use the email address and password assigned to your HRMS account.</p>
+      </div>
+
+      <form id="auth-login-form" class="form-grid">
+        <label>
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        </label>
+
+        <label>
+          <span>Password</span>
+          <input name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+        </label>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Sign in</button>
+          <a class="btn btn-secondary" href="{% url 'auth-signup' %}">Create account</a>
+        </div>
+      </form>
+
+      <p id="login-feedback" class="feedback neutral">No sign-in attempt yet.</p>
+    </article>
+
+    <article class="card session-card">
+      <div class="session-header">
+        <h3>Active session</h3>
+        <button class="btn btn-secondary btn-small" id="load-profile-btn" type="button">Refresh profile</button>
+      </div>
+
+      <div class="chip-row">
+        <span class="chip" id="auth-pill">Signed out</span>
+        <span class="chip" id="role-pill">Role unknown</span>
+      </div>
+
+      <p class="helper-text" id="session-message">Sign in to load the active profile and tokens.</p>
+      <pre id="token-output">No tokens stored.</pre>
+      <pre id="profile-output">{}</pre>
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="logout-btn" type="button">Clear session</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <h3>Verify email</h3>
+        <p>Paste the uid and token from the verification email, or open the emailed link directly.</p>
+      </div>
+
+      <div class="input-grid">
+        <label>
+          <span>UID</span>
+          <input id="verify-uid" type="text" placeholder="Paste uid here">
+        </label>
+        <label>
+          <span>Token</span>
+          <input id="verify-token" type="text" placeholder="Paste token here">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="verify-btn" type="button">Verify now</button>
+      </div>
+
+      <p id="verify-feedback" class="feedback neutral">Verification status appears here.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

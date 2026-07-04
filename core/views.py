@@ -15,6 +15,7 @@ from .serializers import (
     LeaveRequestSerializer,
     LoginSerializer,
     PasswordChangeSerializer,
+    PublicSignupSerializer,
     StaffCreateUserSerializer,
 )
 
@@ -88,6 +89,31 @@ class LoginView(APIView):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
+class PublicSignupView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = PublicSignupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        verification_link = send_user_verification_email(user, request)
+
+        return Response(
+            {
+                'message': 'Account created successfully. Check your email to verify your account.',
+                'user': {
+                    'id': user.id,
+                    'employee_id': user.employee_id,
+                    'email': user.email,
+                    'role': user.role,
+                    'is_email_verified': user.is_email_verified,
+                },
+                'verification_link': verification_link,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
 class VerifyEmailView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -149,5 +175,9 @@ class MeView(APIView):
         )
 
 
-class AuthAppView(TemplateView):
-    template_name = 'core/auth_app.html'
+class AuthLoginPageView(TemplateView):
+    template_name = 'core/login.html'
+
+
+class AuthSignupPageView(TemplateView):
+    template_name = 'core/signup.html'

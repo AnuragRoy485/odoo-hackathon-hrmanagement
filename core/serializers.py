@@ -43,6 +43,39 @@ class StaffCreateUserSerializer(serializers.ModelSerializer):
         return user
 
 
+class PublicSignupSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'password', 'confirm_password']
+
+    def validate_email(self, value):
+        normalized_email = value.strip().lower()
+        if CustomUser.objects.filter(email__iexact=normalized_email).exists():
+            raise serializers.ValidationError('An account with this email already exists.')
+        return normalized_email
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({'confirm_password': 'Passwords do not match.'})
+
+        validate_password(attrs['password'])
+        return attrs
+
+    def create(self, validated_data):
+        validated_data.pop('confirm_password')
+        user = CustomUser.objects.create_user(
+            email=validated_data['email'],
+            password=validated_data['password'],
+            role=CustomUser.RoleChoices.EMPLOYEE,
+        )
+        user.must_change_password = False
+        user.save(update_fields=['must_change_password'])
+        return user
+
+
 class LoginSerializer(TokenObtainPairSerializer):
     username_field = 'email'
 
