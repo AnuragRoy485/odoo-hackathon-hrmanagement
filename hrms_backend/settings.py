@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+AUTH_USER_MODEL = 'core.CustomUser'
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -58,6 +60,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Standard Vite port
     "http://localhost:3000",  # Standard React/Next port
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@hrms.local'
 
 ROOT_URLCONF = 'hrms_backend.urls'
 
